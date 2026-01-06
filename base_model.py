@@ -80,3 +80,23 @@ class TransformerBlock(nn.Module):
         x = x + self.dropout(self.attn(self.norm1(x), mask))
         x = x + self.dropout(self.ff(self.norm2(x)))
         return x
+
+class SLM(nn.Module):
+    def __init__(self, vocab_size, dim=512, layers=6, heads=8):
+        super().__init__()
+
+        self.embed = nn.Embedding(vocab_size, dim)
+        self.blocks = nn.ModuleList([
+            TransformerBlock(dim, heads) for _ in range(layers)
+        ])
+        self.norm = nn.LayerNorm(dim)
+        self.lm_head = nn.Linear(dim, vocab_size, bias=False)
+
+    def forward(self, input_ids):
+        x = self.embed(input_ids)
+
+        for block in self.blocks:
+            x = block(x)
+
+        x = self.norm(x)
+        return self.lm_head(x)
