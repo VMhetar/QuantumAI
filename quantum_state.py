@@ -27,8 +27,14 @@ class QuantumState:
         self.state = psi
         return psi
 
-    def state_movement(self, psi_in, psi_out,U):
-        """
-        qubit:int
-        target:int
-        """
+def state_movement(self, psi_in, U):
+    """
+    psi_in : np.ndarray (2^n,)
+    U      : np.ndarray (2^n, 2^n) unitary matrix
+    """
+    psi_out = U @ psi_in
+
+    # numerical stability
+    psi_out = psi_out / np.linalg.norm(psi_out)
+
+    return psi_out
