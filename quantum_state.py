@@ -27,14 +27,17 @@ class QuantumState:
         self.state = psi
         return psi
 
-def state_movement(self, psi_in, U):
-    """
-    psi_in : np.ndarray (2^n,)
-    U      : np.ndarray (2^n, 2^n) unitary matrix
-    """
-    psi_out = U @ psi_in
+    def state_movement(self, U):
+        """
+        Apply unitary evolution to internal state
+        """
+        if self.state is None:
+            raise ValueError("State not initialized")
 
-    # numerical stability
-    psi_out = psi_out / np.linalg.norm(psi_out)
+        if U.shape != (self.dim, self.dim):
+            raise ValueError("Unitary has wrong shape")
 
-    return psi_out
+        self.state = U @ self.state
+        self.state /= np.linalg.norm(self.state)
+
+
