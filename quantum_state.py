@@ -26,3 +26,9 @@ class QuantumState:
 
         self.state = psi
         return psi
+
+    def state_movement(self, psi_in, psi_out,U):
+        """
+        qubit:int
+        target:int
+        """
