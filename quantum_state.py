@@ -4,7 +4,6 @@ class QuantumState:
     def __init__(self, state: np.ndarray):
         state = np.asarray(state, dtype=np.complex128)
 
-        # Normalization check
         norm = np.linalg.norm(state)
         if not np.isclose(norm, 1.0):
             raise ValueError("Quantum state must be normalized")
