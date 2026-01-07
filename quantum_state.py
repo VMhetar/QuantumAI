@@ -1,22 +1,28 @@
 import numpy as np
 
 class QuantumState:
-    def __init__(self, state: np.ndarray):
-        state = np.asarray(state, dtype=np.complex128)
+    def __init__(self):
+        self.state = None
+        self.n_qubits = None
+        self.dim = None
 
-        norm = np.linalg.norm(state)
+    def state_vector(self, n, amplitudes):
+        """
+        n : number of qubits
+        amplitudes : iterable of complex amplitudes (length = 2^n)
+        """
+        self.n_qubits = n
+        self.dim = 2 ** n
+
+        psi = np.asarray(amplitudes, dtype=np.complex128)
+
+        if psi.shape[0] != self.dim:
+            raise ValueError("State vector size must be 2^n")
+
+        # Normalize
+        norm = np.linalg.norm(psi)
         if not np.isclose(norm, 1.0):
-            raise ValueError("Quantum state must be normalized")
+            psi = psi / norm
 
-        self.state = state
-        self.dim = len(state)
-        self.n_qubits = int(np.log2(self.dim))
-
-        if 2**self.n_qubits != self.dim:
-            raise ValueError("State vector length must be power of 2")
-
-    @classmethod
-    def zero(cls, n_qubits):
-        state = np.zeros(2**n_qubits, dtype=np.complex128)
-        state[0] = 1.0
-        return cls(state)
+        self.state = psi
+        return psi
