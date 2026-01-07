@@ -1,5 +1,6 @@
 import math
 import torch
+import numpy as np
 import torch.nn as nn
 import torch.nn.functional as F
 
@@ -100,3 +101,28 @@ class SLM(nn.Module):
 
         x = self.norm(x)
         return self.lm_head(x)
+
+
+def rope_unitary(dim, theta):
+    """
+    dim must be even
+    theta can be scalar or array of size dim//2
+    """
+    assert dim % 2 == 0
+
+    U = np.zeros((dim, dim), dtype=np.complex128)
+
+    for i in range(0, dim, 2):
+        angle = theta if np.isscalar(theta) else theta[i // 2]
+
+        c = np.cos(angle)
+        s = np.sin(angle)
+
+        U[i, i]     = c
+        U[i, i + 1] = -s
+        U[i + 1, i] = s
+        U[i + 1, i + 1] = c
+
+    return U
+
+
