@@ -19,7 +19,6 @@ class QuantumState:
         if psi.shape[0] != self.dim:
             raise ValueError("State vector size must be 2^n")
 
-        # Normalize
         norm = np.linalg.norm(psi)
         if not np.isclose(norm, 1.0):
             psi = psi / norm
